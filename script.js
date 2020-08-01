@@ -52,8 +52,6 @@ function matchNum() {
         return;
     }
 
-    
-
     // if generate number is equal to input number
     if (generateNum == givenNum) {
         rightMessage.style.display = "block";
@@ -64,6 +62,7 @@ function matchNum() {
         var submitBtn = document.getElementById("submit");
         submitBtn.disabled = true;  // disable submit button
     } 
+    
      // if generate number is not equal to input number
     else {
         wrongMessage.style.display = "block";
