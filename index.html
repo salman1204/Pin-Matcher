@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="random-num-field" class="form-control" type="text">
+                    <button onclick="generateNum()" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="num-input-field" class="form-control" type="text">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                                <div onclick="inputNum(7)" class="button">7</div>
+                                <div onclick="inputNum(8)" class="button">8</div>
+                                <div onclick="inputNum(9)" class="button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div onclick="inputNum(4)" class="button">4</div>
+                                <div onclick="inputNum(5)" class="button">5</div>
+                                <div onclick="inputNum(6)" class="button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div onclick="inputNum(1)" class="button">1</div>
+                                <div onclick="inputNum(2)" class="button">2</div>
+                                <div onclick="inputNum(3)" class="button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div onclick="backspaceNum()" class="button">
+                                    < </div> <div onclick="inputNum(0)" class="button">0
+                                </div>
+                                <div onclick="clearNumField()" class="button">C</div>
+                            </div>
+                            <div>
+                                <button onclick="matchNum()" id="submit" type="submit"
+                                    class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="try-left">3</span> try left</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="notify-section">
+                <p id="wrong-message" class="notify">❌ Pin Didn't Match, Please try again</p>
+                <p id="right-message" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            </div>
+        </div>
+
+        <script>
+            // generate random number
+            function generateNum() {
+                var randomNum = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById("random-num-field").value = randomNum;
+                document.getElementById("try-left").innerText = 3;
+                clearNumField() //clear input field
+                var submitBtn = document.getElementById("submit"); 
+                submitBtn.disabled = false; //enable submit button
+                document.getElementById('right-message').style.display = "none";
+                document.getElementById('wrong-message').style.display = "none";
+
+                
+            }
+
+            // Take Input  
+            function inputNum(num) {
+
+                var numLength = (document.getElementById("num-input-field").value).length;
+
+                if (numLength < 4) {
+                    document.getElementById("num-input-field").value += num;
+                } 
+                else {
+                    alert("You can't enter more than 4 Digit")
+                }
+            }
+
+     
+            // Match Number
+            function matchNum() {
+                
+                var generateNum = parseInt(document.getElementById("random-num-field").value);
+                console.log(generateNum);
+                var givenNum = parseInt(document.getElementById("num-input-field").value);
+
+                let rightMessage = document.getElementById('right-message');
+                let wrongMessage = document.getElementById('wrong-message');
+             
+
+                var numLength = (document.getElementById("num-input-field").value).length;
+               
+                // if doen't generate pin 
+                
+                if (isNaN(generateNum)){
+                    alert("Generate Pin First");
+                    return;
+                }
+
+                // if input number less than 4 digit
+                if (numLength < 4) {  
+                    alert("Enter 4 digit number");
+                    return;
+                }
+
+                
+
+                // if generate number is equal to input number
+                if (generateNum == givenNum) {
+                    rightMessage.style.display = "block";
+                    wrongMessage.style.display = "none";
+                    clearNumField()
+                    document.getElementById("random-num-field").value = "";
+                    tryLeft();
+                    var submitBtn = document.getElementById("submit");
+                    submitBtn.disabled = true;  // disable submit button
+                } 
+                 // if generate number is not equal to input number
+                else {
+                    wrongMessage.style.display = "block";
+                    rightMessage.style.display = "none";
+                    clearNumField()  //clear the input filed
+                    tryAmount = tryLeft();   
+                    // after 3 try
+                    if (tryAmount < 2) {
+                        document.getElementById("random-num-field").value = ""; //generate number field blank after 3 try
+                        var submitBtn = document.getElementById("submit");
+                        submitBtn.disabled = true;  // disable submit button after 3 try
+                        alert("Generate New Pin")
+                    }
+                }
+            }
+
+            // Clear Number Field
+            function clearNumField() {
+                document.getElementById("num-input-field").value = "";
+            }
+
+            // Delete last Digit
+            function backspaceNum() {
+                var inputNum = (document.getElementById("num-input-field").value);
+                inputNum = inputNum.substring(0, inputNum.length - 1)
+                document.getElementById("num-input-field").value = inputNum;
+            }
+
+            // Try Left Reamining
+            function tryLeft() {
+                var tryLeft = parseInt(document.getElementById("try-left").innerText);
+                if (tryLeft > 0) {
+                    document.getElementById("try-left").innerText = tryLeft - 1;
+                }
+                return tryLeft;
+            }
+        </script>
+</body>
+
+</html>
